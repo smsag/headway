@@ -5,8 +5,6 @@ import { findOverlayHost } from "./overlay-host";
 type OverlayRowEvent = {
   lineNumber: number;
   level: 1 | 2 | 3 | 4 | 5 | 6;
-  kind: "ancestor" | "sibling";
-  source: "click" | "hover";
 };
 
 type OverlayControllerLike = {
@@ -17,9 +15,7 @@ type OverlayControllerLike = {
 
 type CreateOverlayController = (
   host: HTMLElement,
-  onRowEvent: (event: OverlayRowEvent) => void,
-  onPanelHover: () => void,
-  onMouseLeave: () => void
+  onRowEvent: (event: OverlayRowEvent) => void
 ) => OverlayControllerLike;
 
 export class OverlayCoordinator {
@@ -30,16 +26,14 @@ export class OverlayCoordinator {
   constructor(createController?: CreateOverlayController) {
     this.createController =
       createController ??
-      ((host, onRowEvent, onPanelHover, onMouseLeave) =>
-        new OverlayController(host, onRowEvent, onPanelHover, onMouseLeave));
+      ((host, onRowEvent) =>
+        new OverlayController(host, onRowEvent));
   }
 
   renderForView(
     view: MarkdownView,
     input: OverlayRenderInput,
-    onRowEvent: (event: OverlayRowEvent) => void,
-    onPanelHover: () => void,
-    onMouseLeave: () => void
+    onRowEvent: (event: OverlayRowEvent) => void
   ): boolean {
     const nextHost = findOverlayHost(view);
     if (!nextHost) {
@@ -50,7 +44,7 @@ export class OverlayCoordinator {
     if (this.host !== nextHost) {
       this.clear();
       this.host = nextHost;
-      this.controller = this.createController(nextHost, onRowEvent, onPanelHover, onMouseLeave);
+      this.controller = this.createController(nextHost, onRowEvent);
     }
 
     this.controller?.render(input);

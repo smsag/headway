@@ -1,32 +1,14 @@
 import { describe, expect, it } from "vitest";
-import {
-  reduceMouseLeaveCollapse,
-  reduceOutsideTapCollapse,
-  reduceOverlayRowEvent
-} from "./overlay-interaction";
+import { reduceOverlayRowEvent } from "./overlay-interaction";
 import type { HeadingLevel } from "../types";
 
 const level2 = 2 as HeadingLevel;
 
 describe("reduceOverlayRowEvent", () => {
-  it("ignores desktop hover in stack-only mode", () => {
+  it("navigates directly for ancestor rows", () => {
     const result = reduceOverlayRowEvent(
       {},
-      { lineNumber: 10, level: level2, kind: "ancestor", source: "hover" },
-      false
-    );
-
-    expect(result).toEqual({
-      navigateToLine: null,
-      shouldRender: false
-    });
-  });
-
-  it("navigates directly on touch click", () => {
-    const result = reduceOverlayRowEvent(
-      {},
-      { lineNumber: 10, level: level2, kind: "ancestor", source: "click" },
-      true
+      { lineNumber: 10, level: level2 }
     );
 
     expect(result).toEqual({
@@ -35,42 +17,14 @@ describe("reduceOverlayRowEvent", () => {
     });
   });
 
-  it("navigates directly for desktop click", () => {
+  it("navigates directly for any provided heading line", () => {
     const result = reduceOverlayRowEvent(
       {},
-      { lineNumber: 25, level: level2, kind: "sibling", source: "click" },
-      false
+      { lineNumber: 25, level: level2 }
     );
 
     expect(result).toEqual({
       navigateToLine: 25,
-      shouldRender: false
-    });
-  });
-});
-
-describe("collapse reducers", () => {
-  it("ignores touch outside tap in stack-only mode", () => {
-    const result = reduceOutsideTapCollapse(
-      {},
-      true,
-      false
-    );
-
-    expect(result).toEqual({
-      navigateToLine: null,
-      shouldRender: false
-    });
-  });
-
-  it("ignores desktop mouse leave in stack-only mode", () => {
-    const result = reduceMouseLeaveCollapse(
-      {},
-      false
-    );
-
-    expect(result).toEqual({
-      navigateToLine: null,
       shouldRender: false
     });
   });

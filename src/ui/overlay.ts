@@ -1,22 +1,12 @@
 import type { HeadingEntry, HeadingLevel } from "../types";
 
-export interface OverlayRenderGroup {
-  level: HeadingLevel;
-  rows: HeadingEntry[];
-  selectedLineNumber: number | null;
-}
-
 export interface OverlayRenderInput {
   ancestorStack: HeadingEntry[];
-  groups: OverlayRenderGroup[];
-  maxVisibleRows: number;
 }
 
 interface RowEvent {
   lineNumber: number;
   level: HeadingLevel;
-  kind: "ancestor" | "sibling";
-  source: "click" | "hover";
 }
 
 export class OverlayController {
@@ -27,9 +17,7 @@ export class OverlayController {
 
   constructor(
     parent: HTMLElement,
-    onRowEvent: (event: RowEvent) => void,
-    _onPanelHover: () => void,
-    _onMouseLeave: () => void
+    onRowEvent: (event: RowEvent) => void
   ) {
     this.parent = parent;
     this.parent.classList.add("headway-overlay-host");
@@ -53,7 +41,7 @@ export class OverlayController {
   render(input: OverlayRenderInput): void {
     this.listEl.empty();
 
-    if (input.ancestorStack.length === 0 && input.groups.length === 0) {
+    if (input.ancestorStack.length === 0) {
       this.container.classList.add("is-hidden");
       return;
     }
@@ -68,44 +56,10 @@ export class OverlayController {
 
       row.dataset.lineNumber = String(entry.lineNumber);
       row.dataset.level = String(entry.level);
-      row.dataset.kind = "ancestor";
       row.dataset.text = entry.text;
 
       const prefix = "#".repeat(entry.level);
       row.setText(`${prefix} ${entry.text}`);
-    }
-
-    const maxRows = Math.max(3, input.maxVisibleRows);
-
-    for (const group of input.groups) {
-      const siblingsContainer = this.listEl.createEl("li", {
-        cls: "headway-overlay-siblings-wrap"
-      });
-
-      const siblingsList = siblingsContainer.createEl("ul", {
-        cls: "headway-overlay-siblings"
-      });
-
-      siblingsList.style.maxHeight = `${maxRows * 1.85}em`;
-
-      for (const rowEntry of group.rows) {
-        const row = siblingsList.createEl("li", {
-          cls: "headway-overlay-row headway-overlay-row-sibling"
-        });
-        row.addClass(`headway-overlay-row-level-${rowEntry.level}`);
-
-        row.dataset.lineNumber = String(rowEntry.lineNumber);
-        row.dataset.level = String(rowEntry.level);
-        row.dataset.kind = "sibling";
-        row.dataset.text = rowEntry.text;
-
-        const prefix = "#".repeat(rowEntry.level);
-        row.setText(`${prefix} ${rowEntry.text}`);
-
-        if (rowEntry.lineNumber === group.selectedLineNumber) {
-          row.addClass("is-current");
-        }
-      }
     }
   }
 
@@ -142,7 +96,6 @@ export class OverlayController {
 
     const lineNumber = Number(row.dataset.lineNumber);
     const level = Number(row.dataset.level) as HeadingLevel;
-    const kind = (row.dataset.kind ?? "ancestor") as "ancestor" | "sibling";
 
     if (Number.isNaN(lineNumber) || Number.isNaN(level)) {
       return;
@@ -150,9 +103,7 @@ export class OverlayController {
 
     this.onRowEvent({
       lineNumber,
-      level,
-      kind,
-      source: "click"
+      level
     });
   };
 

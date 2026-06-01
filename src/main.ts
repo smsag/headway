@@ -15,12 +15,9 @@ import {
 import { RefreshScheduler, type RefreshOptions } from "./services/refresh-scheduler";
 import { OverlayCoordinator } from "./services/overlay-coordinator";
 import { bootstrapHeadwayRuntime } from "./services/plugin-bootstrap";
-import { DEFAULT_SETTINGS, normalizeSettings } from "./services/plugin-settings";
-import { HeadwaySettingTab } from "./settings";
-import type { HeadingEntry, HeadwaySettings } from "./types";
+import type { HeadingEntry } from "./types";
 
 export default class HeadwayPlugin extends Plugin {
-  settings: HeadwaySettings = DEFAULT_SETTINGS;
   private currentView: MarkdownView | null = null;
   private viewportTopLine = 0;
   private headingIndex: HeadingEntry[] = [];
@@ -31,7 +28,6 @@ export default class HeadwayPlugin extends Plugin {
   private refreshScheduler: RefreshScheduler | null = null;
 
   async onload(): Promise<void> {
-    await this.loadSettings();
     this.refreshScheduler = new RefreshScheduler(
       (callback) => window.requestAnimationFrame(callback),
       ({ viewportTopLine, options }) => this.refreshForActiveView(viewportTopLine, options)
@@ -47,27 +43,14 @@ export default class HeadwayPlugin extends Plugin {
       onActiveLeafChange: () => {
         this.requestOverlayRefresh();
       },
-      onGlobalPointerDown: (event) => {
-        this.handleGlobalPointerDown(event);
-      }
+      onGlobalPointerDown: () => {}
     });
-
-    this.addSettingTab(new HeadwaySettingTab(this.app, this));
 
     this.requestOverlayRefresh();
   }
 
   onunload(): void {
     this.clearOverlay();
-  }
-
-  async loadSettings(): Promise<void> {
-    const loaded = await this.loadData();
-    this.settings = normalizeSettings(loaded);
-  }
-
-  async saveSettings(): Promise<void> {
-    await this.saveData(this.settings);
   }
 
   requestOverlayRefresh(): void {
@@ -146,13 +129,9 @@ export default class HeadwayPlugin extends Plugin {
     const rendered = this.overlayCoordinator.renderForView(
       view,
       {
-        ancestorStack: this.ancestorStack,
-        groups: [],
-        maxVisibleRows: this.settings.overlayMaxVisibleRows
+        ancestorStack: this.ancestorStack
       },
-      (event) => this.handleOverlayRowEvent(event),
-      () => {},
-      () => {}
+      (event) => this.handleOverlayRowEvent(event)
     );
 
     if (!rendered) {
@@ -170,7 +149,7 @@ export default class HeadwayPlugin extends Plugin {
   }
 
   private handleOverlayRowEvent(event: OverlayRowEvent): void {
-    const result = reduceOverlayRowEvent({}, event, this.isTouchDevice());
+    const result = reduceOverlayRowEvent({}, event);
 
     if (result.navigateToLine !== null) {
       this.navigateToLine(result.navigateToLine);
@@ -219,14 +198,6 @@ export default class HeadwayPlugin extends Plugin {
 
       view.editor.setCursor(lineNumber, 0);
     }, 1000);
-  }
-
-  private handleGlobalPointerDown(event: PointerEvent): void {
-    void event;
-  }
-
-  private isTouchDevice(): boolean {
-    return window.matchMedia("(pointer: coarse)").matches;
   }
 
 }

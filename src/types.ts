@@ -7,12 +7,3 @@ export interface HeadingEntry {
 }
 
 export type HeadingIndex = HeadingEntry[];
-
-export interface OverlayState {
-  ancestorStack: HeadingEntry[];
-  expandedLinesByLevel: Partial<Record<HeadingLevel, number>>;
-}
-
-export interface HeadwaySettings {
-  overlayMaxVisibleRows: number;
-}

@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  resolveAncestorStack,
-  resolveDirectChildHeadings,
-  resolveSiblingHeadings
-} from "./ancestor-stack";
+import { resolveAncestorStack } from "./ancestor-stack";
 import type { HeadingIndex } from "../types";
 
 const index: HeadingIndex = [
@@ -75,39 +71,5 @@ describe("resolveAncestorStack", () => {
       { level: 4, text: "L4", lineNumber: 14 },
       { level: 5, text: "L5", lineNumber: 20 }
     ]);
-  });
-});
-
-describe("resolveSiblingHeadings", () => {
-  it("returns siblings only from the same parent branch", () => {
-    const stack = resolveAncestorStack(index, 13);
-    expect(resolveSiblingHeadings(index, stack, 2)).toEqual([
-      { level: 2, text: "A.1", lineNumber: 3 },
-      { level: 2, text: "A.2", lineNumber: 10 }
-    ]);
-  });
-
-  it("returns empty when level is not active in stack", () => {
-    const stack = resolveAncestorStack(index, 21);
-    expect(resolveSiblingHeadings(index, stack, 3)).toEqual([]);
-  });
-});
-
-describe("resolveDirectChildHeadings", () => {
-  it("returns direct child headings one level below parent", () => {
-    expect(resolveDirectChildHeadings(index, 0)).toEqual([
-      { level: 2, text: "A.1", lineNumber: 3 },
-      { level: 2, text: "A.2", lineNumber: 10 }
-    ]);
-  });
-
-  it("does not include deeper descendants", () => {
-    expect(resolveDirectChildHeadings(index, 10)).toEqual([
-      { level: 3, text: "A.2.a", lineNumber: 12 }
-    ]);
-  });
-
-  it("returns empty for unknown parent line", () => {
-    expect(resolveDirectChildHeadings(index, 999)).toEqual([]);
   });
 });
