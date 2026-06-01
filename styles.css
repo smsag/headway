@@ -1,0 +1,71 @@
+:root {
+  --headway-border-radius: 8px;
+  --headway-padding: 8px;
+}
+
+.headway-overlay {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  margin: 4px 8px;
+  padding: var(--headway-padding);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--headway-border-radius);
+  background: color-mix(in srgb, var(--background-primary) 90%, var(--background-secondary));
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+.headway-overlay.is-hidden {
+  display: none;
+}
+
+.headway-overlay-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.headway-overlay-row {
+  font-size: var(--font-ui-small);
+  line-height: 1.35;
+  color: var(--text-normal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.headway-overlay-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.headway-overlay-row-ancestor.is-expanded {
+  font-weight: 600;
+}
+
+.headway-overlay-siblings-wrap {
+  margin: 2px 0 4px;
+}
+
+.headway-overlay-siblings {
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  overflow-y: auto;
+  border-left: 2px solid var(--background-modifier-border);
+}
+
+.headway-overlay-row-sibling {
+  margin-left: 4px;
+}
+
+.headway-overlay-row-sibling.is-current {
+  color: var(--text-accent);
+  background: var(--background-modifier-active-hover);
+}
