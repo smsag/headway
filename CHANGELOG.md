@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.2 - 2026-06-01
+
+### Changed
+
+- Simplified navigation UI to stack-only behavior and removed hover cascade interactions.
+- Added direct click/tap heading navigation with viewport-aware targeting in both edit and reading modes.
+- Added transient heading highlight feedback after navigation in reading and editor contexts.
+- Refined overlay host placement and viewport top-line measurement for more stable positioning.
+- Updated README and docs (`docs/ARCHITECTURE.md`, `docs/INTERACTION_SPEC.md`, `docs/QA.md`, `docs/RELEASE.md`) to match shipped behavior.
+
 ## 0.1.1 - 2026-06-01
 
 ### Added
