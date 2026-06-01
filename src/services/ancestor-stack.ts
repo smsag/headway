@@ -7,7 +7,7 @@ export function resolveAncestorStack(
   const stackByLevel = new Map<number, HeadingEntry>();
 
   for (const heading of headingIndex) {
-    if (heading.lineNumber >= viewportTopLine) {
+    if (heading.lineNumber > viewportTopLine) {
       break;
     }
 
@@ -76,4 +76,37 @@ export function resolveSiblingHeadings(
   }
 
   return siblings;
+}
+
+export function resolveDirectChildHeadings(
+  headingIndex: HeadingIndex,
+  parentLineNumber: number
+): HeadingEntry[] {
+  const parentIndex = headingIndex.findIndex(
+    (entry) => entry.lineNumber === parentLineNumber
+  );
+  if (parentIndex < 0) {
+    return [];
+  }
+
+  const parent = headingIndex[parentIndex];
+  const childLevel = (parent.level + 1) as number;
+  if (childLevel > 6) {
+    return [];
+  }
+
+  const children: HeadingEntry[] = [];
+  for (let i = parentIndex + 1; i < headingIndex.length; i += 1) {
+    const entry = headingIndex[i];
+
+    if (entry.level <= parent.level) {
+      break;
+    }
+
+    if (entry.level === childLevel) {
+      children.push(entry);
+    }
+  }
+
+  return children;
 }

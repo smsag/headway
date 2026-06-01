@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { resolveAncestorStack, resolveSiblingHeadings } from "./ancestor-stack";
+import {
+  resolveAncestorStack,
+  resolveDirectChildHeadings,
+  resolveSiblingHeadings
+} from "./ancestor-stack";
 import type { HeadingIndex } from "../types";
 
 const index: HeadingIndex = [
@@ -14,7 +18,12 @@ const index: HeadingIndex = [
 
 describe("resolveAncestorStack", () => {
   it("returns empty before the first heading", () => {
-    expect(resolveAncestorStack(index, 0)).toEqual([]);
+    const preHeadingIndex: HeadingIndex = [
+      { level: 1, text: "Intro", lineNumber: 2 },
+      { level: 2, text: "Intro Child", lineNumber: 5 }
+    ];
+
+    expect(resolveAncestorStack(preHeadingIndex, 0)).toEqual([]);
   });
 
   it("tracks latest heading at each active level", () => {
@@ -22,6 +31,13 @@ describe("resolveAncestorStack", () => {
       { level: 1, text: "A", lineNumber: 0 },
       { level: 2, text: "A.2", lineNumber: 10 },
       { level: 3, text: "A.2.a", lineNumber: 12 }
+    ]);
+  });
+
+  it("includes the heading that reaches the top edge", () => {
+    expect(resolveAncestorStack(index, 10)).toEqual([
+      { level: 1, text: "A", lineNumber: 0 },
+      { level: 2, text: "A.2", lineNumber: 10 }
     ]);
   });
 
@@ -42,6 +58,24 @@ describe("resolveAncestorStack", () => {
       { level: 4, text: "Deep", lineNumber: 6 }
     ]);
   });
+
+  it("keeps full stack depth through level 5", () => {
+    const deepIndex: HeadingIndex = [
+      { level: 1, text: "L1", lineNumber: 1 },
+      { level: 2, text: "L2", lineNumber: 5 },
+      { level: 3, text: "L3", lineNumber: 9 },
+      { level: 4, text: "L4", lineNumber: 14 },
+      { level: 5, text: "L5", lineNumber: 20 }
+    ];
+
+    expect(resolveAncestorStack(deepIndex, 21)).toEqual([
+      { level: 1, text: "L1", lineNumber: 1 },
+      { level: 2, text: "L2", lineNumber: 5 },
+      { level: 3, text: "L3", lineNumber: 9 },
+      { level: 4, text: "L4", lineNumber: 14 },
+      { level: 5, text: "L5", lineNumber: 20 }
+    ]);
+  });
 });
 
 describe("resolveSiblingHeadings", () => {
@@ -56,5 +90,24 @@ describe("resolveSiblingHeadings", () => {
   it("returns empty when level is not active in stack", () => {
     const stack = resolveAncestorStack(index, 21);
     expect(resolveSiblingHeadings(index, stack, 3)).toEqual([]);
+  });
+});
+
+describe("resolveDirectChildHeadings", () => {
+  it("returns direct child headings one level below parent", () => {
+    expect(resolveDirectChildHeadings(index, 0)).toEqual([
+      { level: 2, text: "A.1", lineNumber: 3 },
+      { level: 2, text: "A.2", lineNumber: 10 }
+    ]);
+  });
+
+  it("does not include deeper descendants", () => {
+    expect(resolveDirectChildHeadings(index, 10)).toEqual([
+      { level: 3, text: "A.2.a", lineNumber: 12 }
+    ]);
+  });
+
+  it("returns empty for unknown parent line", () => {
+    expect(resolveDirectChildHeadings(index, 999)).toEqual([]);
   });
 });

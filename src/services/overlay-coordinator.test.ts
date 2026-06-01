@@ -13,21 +13,17 @@ describe("OverlayCoordinator", () => {
 
     const coordinator = new OverlayCoordinator(createSpy);
     const view = {
-      containerEl: {
-        querySelector: (selector: string) =>
-          selector === ".cm-scroller" ? host : null
-      }
+      contentEl: host
     } as unknown as MarkdownView;
 
     const input = {
       ancestorStack: [],
-      expandedLevel: null,
-      siblings: [],
+      groups: [],
       maxVisibleRows: 6
     };
 
-    coordinator.renderForView(view, input, () => {}, () => {});
-    coordinator.renderForView(view, input, () => {}, () => {});
+    coordinator.renderForView(view, input, () => {}, () => {}, () => {});
+    coordinator.renderForView(view, input, () => {}, () => {}, () => {});
 
     expect(createSpy).toHaveBeenCalledTimes(1);
   });
@@ -53,28 +49,21 @@ describe("OverlayCoordinator", () => {
     const coordinator = new OverlayCoordinator(createSpy);
 
     const viewA = {
-      containerEl: {
-        querySelector: (selector: string) =>
-          selector === ".cm-scroller" ? hostA : null
-      }
+      contentEl: hostA
     } as unknown as MarkdownView;
 
     const viewB = {
-      containerEl: {
-        querySelector: (selector: string) =>
-          selector === ".cm-scroller" ? hostB : null
-      }
+      contentEl: hostB
     } as unknown as MarkdownView;
 
     const input = {
       ancestorStack: [],
-      expandedLevel: null,
-      siblings: [],
+      groups: [],
       maxVisibleRows: 6
     };
 
-    coordinator.renderForView(viewA, input, () => {}, () => {});
-    coordinator.renderForView(viewB, input, () => {}, () => {});
+    coordinator.renderForView(viewA, input, () => {}, () => {}, () => {});
+    coordinator.renderForView(viewB, input, () => {}, () => {}, () => {});
 
     expect(createSpy).toHaveBeenCalledTimes(2);
     expect(destroyA).toHaveBeenCalledTimes(1);
@@ -91,27 +80,21 @@ describe("OverlayCoordinator", () => {
     const coordinator = new OverlayCoordinator(createSpy);
 
     const withHost = {
-      containerEl: {
-        querySelector: (selector: string) =>
-          selector === ".cm-scroller" ? ({} as HTMLElement) : null
-      }
+      contentEl: {} as HTMLElement
     } as unknown as MarkdownView;
 
     const noHost = {
-      containerEl: {
-        querySelector: () => null
-      }
+      contentEl: null
     } as unknown as MarkdownView;
 
     const input = {
       ancestorStack: [],
-      expandedLevel: null,
-      siblings: [],
+      groups: [],
       maxVisibleRows: 6
     };
 
-    coordinator.renderForView(withHost, input, () => {}, () => {});
-    const rendered = coordinator.renderForView(noHost, input, () => {}, () => {});
+    coordinator.renderForView(withHost, input, () => {}, () => {}, () => {});
+    const rendered = coordinator.renderForView(noHost, input, () => {}, () => {}, () => {});
 
     expect(rendered).toBe(false);
     expect(destroySpy).toHaveBeenCalledTimes(1);
