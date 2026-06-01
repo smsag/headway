@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.3 - 2026-06-01
+
+### Changed
+
+- Cleaned up stack-only architecture by removing orphaned hover/sibling-era contracts and event variants.
+- Removed obsolete "Max visible rows" settings plumbing and related normalization logic.
+- Removed unused helper modules and dead code paths from overlay interaction and ancestor services.
+- Simplified overlay render and coordinator APIs to align with current click/tap navigation behavior.
+- Updated and trimmed tests to validate only active stack-only behavior.
+
 ## 0.1.2 - 2026-06-01
 
 ### Changed
