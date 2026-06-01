@@ -10,7 +10,7 @@ export type HeadingIndex = HeadingEntry[];
 
 export interface OverlayState {
   ancestorStack: HeadingEntry[];
-  expandedLevel: HeadingLevel | null;
+  expandedLinesByLevel: Partial<Record<HeadingLevel, number>>;
 }
 
 export interface HeadwaySettings {

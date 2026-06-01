@@ -3,17 +3,29 @@
   --headway-padding: 8px;
 }
 
+.headway-overlay-host {
+  position: relative;
+}
+
 .headway-overlay {
-  position: sticky;
+  position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  width: auto;
+  box-sizing: border-box;
   z-index: 50;
-  margin: 4px 8px;
-  padding: var(--headway-padding);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--headway-border-radius);
-  background: color-mix(in srgb, var(--background-primary) 90%, var(--background-secondary));
-  backdrop-filter: blur(3px);
+  margin: 0;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: color-mix(in srgb, var(--background-primary) 94%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--background-modifier-border) 45%, transparent);
   pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
 .headway-overlay.is-hidden {
@@ -30,19 +42,36 @@
 }
 
 .headway-overlay-row {
+  --headway-level: 1;
   font-size: var(--font-ui-small);
   line-height: 1.35;
   color: var(--text-normal);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 2px 4px;
+  padding: 2px 6px;
+  padding-left: calc(8px + (var(--headway-level) - 1) * 12px);
+  border-left: 2px solid var(--background-modifier-border);
   border-radius: 4px;
   cursor: pointer;
 }
 
+.headway-overlay-row-level-1 { --headway-level: 1; }
+.headway-overlay-row-level-2 { --headway-level: 2; }
+.headway-overlay-row-level-3 { --headway-level: 3; }
+.headway-overlay-row-level-4 { --headway-level: 4; }
+.headway-overlay-row-level-5 { --headway-level: 5; }
+.headway-overlay-row-level-6 { --headway-level: 6; }
+
 .headway-overlay-row:hover {
   background: var(--background-modifier-hover);
+}
+
+.headway-overlay-row.is-current {
+  color: var(--text-accent);
+  background: var(--background-modifier-active-hover);
+  border-left-color: var(--text-accent);
+  font-weight: 600;
 }
 
 .headway-overlay-row-ancestor.is-expanded {
@@ -66,6 +95,5 @@
 }
 
 .headway-overlay-row-sibling.is-current {
-  color: var(--text-accent);
-  background: var(--background-modifier-active-hover);
+  border-left: 2px solid var(--text-accent);
 }

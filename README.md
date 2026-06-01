@@ -1,26 +1,23 @@
 # Headway
 
-Headway is an Obsidian community plugin that keeps a sticky, context-aware heading stack at the top of your note so you always know where you are in long documents.
+Headway is an Obsidian community plugin that keeps a context-aware heading stack at the top of your note so you always know where you are in long documents.
 
 ## What It Does
 
-- Shows the current ancestor heading path while you scroll.
-- Works in both edit mode and reading mode.
-- Lets you navigate by clicking or tapping headings in the overlay.
-- Expands siblings for quick lateral navigation.
-- Supports desktop and touch interaction patterns.
+- Shows only the current heading path while you scroll.
+- Works in both Live Edit and Reading modes.
+- Works on both desktop and mobile.
+- Lets you navigate by clicking or tapping headings in the stack.
+- Highlights the navigated heading target after click navigation.
+- Keeps the overlay floating over content without layout reflow.
 - Uses theme-aware styling and sensible defaults.
 
 ## Interaction Model
 
-- Desktop:
-  - Hover an ancestor row to expand siblings for that level.
-  - Move pointer out of overlay to collapse.
-  - Click heading rows to navigate.
-- Touch:
-  - First tap expands.
-  - Second tap on same ancestor navigates.
-  - Tap outside overlay collapses expanded state.
+- Overlay shows only the active stack path.
+- Clicking or tapping a stack row navigates to that heading.
+- After navigation, the heading target is highlighted.
+- No sibling expansion or hover cascade behavior.
 
 ## Requirements
 
@@ -69,6 +66,7 @@ Watch mode:
 - Architecture: docs/ARCHITECTURE.md
 - QA checklist: docs/QA.md
 - Release checklist: docs/RELEASE.md
+- Interaction spec: docs/INTERACTION_SPEC.md
 - Fixture note: docs/fixtures/Long Structured Note.md
 - Changelog: CHANGELOG.md
 
