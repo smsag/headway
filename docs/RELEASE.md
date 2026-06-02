@@ -22,6 +22,7 @@ This checklist targets Obsidian community plugin release flow.
    - desktop reading mode
    - stack click navigation and heading highlight behavior
    - mobile stack tap navigation and heading highlight behavior
+   - focus mode commands and line/paragraph dimming behavior in Live Edit
 3. Verify no console errors when:
    - enabling plugin
    - switching notes repeatedly

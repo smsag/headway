@@ -10,6 +10,7 @@ Headway is an Obsidian community plugin that keeps a context-aware heading stack
 - Lets you navigate by clicking or tapping headings in the stack.
 - Highlights the navigated heading target after click navigation.
 - Keeps the overlay floating over content without layout reflow.
+- Adds a Live Edit focus mode with line and paragraph block variants.
 - Uses theme-aware styling and sensible defaults.
 
 ## Interaction Model
@@ -18,6 +19,18 @@ Headway is an Obsidian community plugin that keeps a context-aware heading stack
 - Clicking or tapping a stack row navigates to that heading.
 - After navigation, the heading target is highlighted.
 - No sibling expansion or hover cascade behavior.
+
+## Focus Mode (Live Edit)
+
+Focus mode dims non-focused text while preserving normal theme color for the focused region.
+
+- `Focus Mode: Set Line`: keeps the cursor line in normal style and dims all other lines.
+- `Focus Mode: Set Paragraph`: keeps the current contiguous Markdown block in normal style and dims the rest.
+- `Focus Mode: Disable`: turns off focus dimming.
+
+Paragraph focus uses contiguous Markdown blocks as units (paragraphs, headings, list blocks, and fenced code blocks), separated by blank lines or block boundaries.
+
+Use Settings -> Headway -> `Focus dim strength` to control dim intensity.
 
 ## Requirements
 

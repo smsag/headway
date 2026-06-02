@@ -15,9 +15,15 @@ import {
 import { RefreshScheduler, type RefreshOptions } from "./services/refresh-scheduler";
 import { OverlayCoordinator } from "./services/overlay-coordinator";
 import { bootstrapHeadwayRuntime } from "./services/plugin-bootstrap";
-import type { HeadingEntry } from "./types";
+import {
+  DEFAULT_SETTINGS,
+  normalizeFocusSettings
+} from "./services/focus-settings";
+import { HeadwaySettingTab } from "./settings";
+import type { FocusMode, HeadingEntry, HeadwaySettings } from "./types";
 
 export default class HeadwayPlugin extends Plugin {
+  settings: HeadwaySettings = DEFAULT_SETTINGS;
   private currentView: MarkdownView | null = null;
   private viewportTopLine = 0;
   private headingIndex: HeadingEntry[] = [];
@@ -28,6 +34,8 @@ export default class HeadwayPlugin extends Plugin {
   private refreshScheduler: RefreshScheduler | null = null;
 
   async onload(): Promise<void> {
+    await this.loadSettings();
+
     this.refreshScheduler = new RefreshScheduler(
       (callback) => window.requestAnimationFrame(callback),
       ({ viewportTopLine, options }) => this.refreshForActiveView(viewportTopLine, options)
@@ -40,11 +48,15 @@ export default class HeadwayPlugin extends Plugin {
       onViewportFromReading: ({ viewportTopLine, scrollTop }) => {
         this.queueRefreshForActiveView(viewportTopLine, { readingScrollTop: scrollTop });
       },
+      getSettings: () => this.settings,
       onActiveLeafChange: () => {
         this.requestOverlayRefresh();
       },
       onGlobalPointerDown: () => {}
     });
+
+    this.registerCommands();
+    this.addSettingTab(new HeadwaySettingTab(this.app, this));
 
     this.requestOverlayRefresh();
   }
@@ -53,8 +65,27 @@ export default class HeadwayPlugin extends Plugin {
     this.clearOverlay();
   }
 
+  async loadSettings(): Promise<void> {
+    const loaded = await this.loadData();
+    this.settings = normalizeFocusSettings(loaded);
+  }
+
+  async saveSettings(): Promise<void> {
+    await this.saveData(this.settings);
+  }
+
   requestOverlayRefresh(): void {
     this.queueRefreshForActiveView();
+  }
+
+  async updateDimOpacity(dimOpacity: number): Promise<void> {
+    this.settings = normalizeFocusSettings({
+      ...this.settings,
+      focusDimOpacity: dimOpacity
+    });
+
+    await this.saveSettings();
+    this.notifyFocusSettingsChanged();
   }
 
   private queueRefreshForActiveView(
@@ -146,6 +177,46 @@ export default class HeadwayPlugin extends Plugin {
     this.overlayCoordinator.clear();
     this.lastRenderSignature = "";
     this.currentView = null;
+  }
+
+  private registerCommands(): void {
+    this.addCommand({
+      id: "set-focus-line-mode",
+      name: "Focus Mode: Set Line",
+      callback: () => {
+        void this.setFocusMode("line");
+      }
+    });
+
+    this.addCommand({
+      id: "set-focus-paragraph-mode",
+      name: "Focus Mode: Set Paragraph",
+      callback: () => {
+        void this.setFocusMode("paragraph");
+      }
+    });
+
+    this.addCommand({
+      id: "disable-focus-mode",
+      name: "Focus Mode: Disable",
+      callback: () => {
+        void this.setFocusMode("off");
+      }
+    });
+  }
+
+  private async setFocusMode(mode: FocusMode): Promise<void> {
+    this.settings = normalizeFocusSettings({
+      ...this.settings,
+      focusMode: mode
+    });
+
+    await this.saveSettings();
+    this.notifyFocusSettingsChanged();
+  }
+
+  private notifyFocusSettingsChanged(): void {
+    window.dispatchEvent(new Event("headway-focus-settings-changed"));
   }
 
   private handleOverlayRowEvent(event: OverlayRowEvent): void {

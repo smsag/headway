@@ -7,3 +7,10 @@ export interface HeadingEntry {
 }
 
 export type HeadingIndex = HeadingEntry[];
+
+export type FocusMode = "off" | "line" | "paragraph";
+
+export interface HeadwaySettings {
+  focusMode: FocusMode;
+  focusDimOpacity: number;
+}

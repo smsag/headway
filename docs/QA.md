@@ -20,7 +20,7 @@ This checklist validates MVP behavior in Obsidian desktop and mobile.
 ## Automated Checks
 
 1. Run `npm test`.
-   - Expected: 9 test files pass.
+   - Expected: all test files pass.
 2. Run `npm run build`.
    - Expected: TypeScript check and bundle both pass.
 
@@ -54,6 +54,19 @@ This checklist validates MVP behavior in Obsidian desktop and mobile.
    - Expected: target heading is visibly highlighted after navigation.
 4. Tap the same stack row repeatedly.
    - Expected: navigation and highlight continue working without needing a first expansion tap.
+
+## Focus Mode (Live Edit)
+
+1. Run command `Focus Mode: Set Line`.
+   - Expected: current cursor line stays normal; all other lines are dimmed.
+2. Move cursor across lines.
+   - Expected: focused line follows cursor without lagging behind.
+3. Run command `Focus Mode: Set Paragraph`.
+   - Expected: current contiguous Markdown block stays normal; rest is dimmed.
+4. Edit around block boundaries (blank lines, list rows, code fences).
+   - Expected: focused block updates as boundaries change.
+5. Run command `Focus Mode: Disable`.
+   - Expected: dimming is removed immediately.
 
 ## Edge Cases
 

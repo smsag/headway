@@ -11,6 +11,8 @@ This behavior must work in both:
 - Live Edit / Source mode via CodeMirror
 - Reading / Preview mode via rendered Markdown DOM
 
+Focus mode is Live Edit-only.
+
 ## Idle State
 
 When the user is not interacting with the overlay, the panel shows only the current heading path for the visible top edge of the note.
@@ -52,6 +54,31 @@ Mobile follows the same stack-only interaction model as desktop.
 - Tapping a stack row navigates immediately to the heading target.
 - Tapping applies highlight behavior equivalent to desktop.
 - No first-tap expansion state exists.
+
+## Focus Mode Behavior (Live Edit)
+
+Focus mode is controlled via commands:
+
+- `Focus Mode: Set Line`
+- `Focus Mode: Set Paragraph`
+- `Focus Mode: Disable`
+
+Line mode:
+
+- The cursor line remains in normal theme text style.
+- All other lines are dimmed by configured intensity.
+
+Paragraph mode:
+
+- The current contiguous Markdown block remains in normal theme text style.
+- All other lines are dimmed by configured intensity.
+- A block is one of: paragraph, heading, list block, or fenced code block.
+- Block boundaries are blank lines or block type boundaries.
+
+Focus update rules:
+
+- Focus region updates on cursor movement.
+- Focus region updates on typing in Live Edit.
 
 ## Layout Requirements
 
