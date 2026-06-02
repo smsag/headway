@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.4 - 2026-06-02
+
+### Added
+
+- Live Edit focus mode with command-controlled variants:
+  - `Focus Mode: Set Line`
+  - `Focus Mode: Set Paragraph`
+  - `Focus Mode: Disable`
+- Configurable focus dim strength setting.
+- Focus range resolution for contiguous Markdown blocks (paragraphs, headings, list blocks, fenced code blocks).
+
+### Changed
+
+- Overlay visual design simplified:
+  - removed stack left-border accents
+  - panel background now follows editor theme background
+  - line-level background fills removed
+- Updated README and docs for focus mode behavior and release/QA coverage.
+
 ## 0.1.3 - 2026-06-01
 
 ### Changed
